@@ -26,6 +26,7 @@ func TestAccUCloudDBInstance_import(t *testing.T) {
 				ImportStateVerifyIgnore: []string{
 					"password",
 					"duration",
+					"backup_id",
 					"vpc_id",
 					"subnet_id",
 				},

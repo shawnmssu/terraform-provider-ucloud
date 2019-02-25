@@ -73,6 +73,7 @@ The following arguments are supported:
 * `backup_count` - (Optional) Specifies the number of backup saved per week, it is 7 backups saved per week by default.
 * `backup_begin_time` - (Optional) Specifies when the backup starts, measured in hour, it starts at one o'clock of 1, 2, 3, 4 in the morning by default.
 * `backup_date` - (Optional) Specifies whether the backup took place from Sunday to Saturday by displaying 7 digits. 0 stands for backup disbaled and 1 stands for backup enabled. The rightmost digit specifies whether the backup took place on Sunday, and the digits from right to left specify whether the backup took place from Monday to Saturday, it's mandatory required to backup twice per week at least. such as: digits "1100000" stands for the backup took place on Saturday and Friday.
+* `backup_id` - (Optional) The ID of backup set of database instance, The instance is created based on a backup set if the ID is specified, otherwise the ID is set to "null". Please note that the "availability_zone ","engine" and "engine_version" requested must be identical with the backup set when performing recovery from backup set.
 * `backup_black_list` - (Optional) The backup for database such as "test.%" or table such as "city.address" specified in the black lists are not supprted.
 * `tag` - (Optional) A mapping of tags to assign to VPC, which contains at most 63 characters and only support Chinese, English, numbers, '-', '_', and '.'. If it is not filled in or a empty string is filled in, then default tag will be assigned. (Default: `Default`).
 

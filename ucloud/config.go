@@ -8,6 +8,7 @@ import (
 	"github.com/ucloud/ucloud-sdk-go/ucloud/auth"
 	"github.com/ucloud/ucloud-sdk-go/ucloud/log"
 
+	pudb "github.com/ucloud/ucloud-sdk-go/private/services/udb"
 	"github.com/ucloud/ucloud-sdk-go/services/uaccount"
 	"github.com/ucloud/ucloud-sdk-go/services/udb"
 	"github.com/ucloud/ucloud-sdk-go/services/udisk"
@@ -48,6 +49,9 @@ type UCloudClient struct {
 	udiskconn    *udisk.UDiskClient
 	udpnconn     *udpn.UDPNClient
 	udbconn      *udb.UDBClient
+
+	// private services
+	pudbconn *pudb.UDBClient
 }
 
 // Client will returns a client with connections for all product
@@ -97,14 +101,17 @@ func (c *Config) Client() (*UCloudClient, error) {
 	}
 
 	// initialize client connections
-	client.uhostconn = uhost.NewClient(cfg, cred)
-	client.unetconn = unet.NewClient(cfg, cred)
-	client.ulbconn = ulb.NewClient(cfg, cred)
-	client.vpcconn = vpc.NewClient(cfg, cred)
-	client.uaccountconn = uaccount.NewClient(cfg, cred)
-	client.udiskconn = udisk.NewClient(cfg, cred)
-	client.udpnconn = udpn.NewClient(cfg, cred)
-	client.udbconn = udb.NewClient(cfg, cred)
+	client.uhostconn = uhost.NewClient(&config, &credential)
+	client.unetconn = unet.NewClient(&config, &credential)
+	client.ulbconn = ulb.NewClient(&config, &credential)
+	client.vpcconn = vpc.NewClient(&config, &credential)
+	client.uaccountconn = uaccount.NewClient(&config, &credential)
+	client.udiskconn = udisk.NewClient(&config, &credential)
+	client.udpnconn = udpn.NewClient(&config, &credential)
+	client.udbconn = udb.NewClient(&config, &credential)
+
+	// initialize client connections for private usage
+	client.pudbconn = pudb.NewClient(&config, &credential)
 
 	client.config = cfg
 	client.credential = cred

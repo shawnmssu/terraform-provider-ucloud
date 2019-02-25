@@ -221,7 +221,7 @@ var availableDBMemory = []int{1, 2, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128}
 func parseDBInstanceType(s string) (*dbInstanceType, error) {
 	splited := strings.Split(s, "-")
 	if len(splited) != 3 {
-		return nil, fmt.Errorf("db instance type is invalid, got %q", s)
+		return nil, fmt.Errorf("db instance type is invalid, got %s", s)
 	}
 	engine := splited[0]
 	if err := checkStringIn(engine, availableDBEngine); err != nil {
