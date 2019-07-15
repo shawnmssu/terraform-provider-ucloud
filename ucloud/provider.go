@@ -113,6 +113,7 @@ func Provider() terraform.ResourceProvider {
 			"ucloud_redis_instance":         resourceUCloudRedisInstance(),
 			"ucloud_memcache_instance":      resourceUCloudMemcacheInstance(),
 			"ucloud_isolation_group":        resourceUCloudIsolationGroup(),
+			"ucloud_vip":                    resourceUCloudVIP(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
