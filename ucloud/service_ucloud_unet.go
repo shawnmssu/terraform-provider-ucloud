@@ -2,6 +2,7 @@ package ucloud
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/ucloud/ucloud-sdk-go/services/unet"
 	"github.com/ucloud/ucloud-sdk-go/ucloud"
@@ -96,4 +97,77 @@ func (c *UCloudClient) describeFirewallById(sgId string) (*unet.FirewallDataSet,
 	}
 
 	return &resp.DataSet[0], nil
+}
+
+func (c *UCloudClient) describeVIPById(vipId string) (*unet.VIPDetailSet, error) {
+	if vipId == "" {
+		return nil, newNotFoundError(getNotFoundMessage("vip", vipId))
+	}
+	conn := c.unetconn
+
+	req := conn.NewDescribeVIPRequest()
+	req.VIPId = ucloud.String(vipId)
+
+	resp, err := conn.DescribeVIP(req)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp == nil || len(resp.VIPSet) < 1 {
+		return nil, newNotFoundError(getNotFoundMessage("vip", vipId))
+	}
+
+	return &resp.VIPSet[0], nil
+}
+
+func (c *UCloudClient) describeShareBandwidthById(sbpId string) (*unet.UnetShareBandwidthSet, error) {
+	if sbpId == "" {
+		return nil, newNotFoundError(getNotFoundMessage("share_bandwith_package", sbpId))
+	}
+	conn := c.unetconn
+
+	req := conn.NewDescribeShareBandwidthRequest()
+	req.ShareBandwidthIds = []string{sbpId}
+
+	resp, err := conn.DescribeShareBandwidth(req)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp == nil || len(resp.DataSet) < 1 {
+		return nil, newNotFoundError(getNotFoundMessage("share_bandwith_package", sbpId))
+	}
+
+	return &resp.DataSet[0], nil
+}
+
+type shareBandwidthAttachment struct {
+	bandwidthPackageId string
+	eipId              string
+}
+
+func (c *UCloudClient) describeShareBandwidthAttachmentById(id string) (*shareBandwidthAttachment, error) {
+	conn := c.unetconn
+
+	p := strings.Split(id, ":")
+	bandwidthPackageId, eipId := p[0], p[1]
+	req := conn.NewDescribeShareBandwidthRequest()
+	req.ShareBandwidthIds = []string{bandwidthPackageId}
+
+	resp, err := conn.DescribeShareBandwidth(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp == nil || len(resp.DataSet) < 1 {
+		return nil, newNotFoundError(getNotFoundMessage("share_bandwith_package_attachment", id))
+	}
+
+	for i := 0; i < len(resp.DataSet[0].EIPSet); i++ {
+		eip := resp.DataSet[0].EIPSet[i]
+		if eipId == eip.EIPId {
+			return &shareBandwidthAttachment{bandwidthPackageId, eipId}, nil
+		}
+	}
+
+	return nil, newNotFoundError(getNotFoundMessage("share_bandwith_package_attachment", id))
 }
